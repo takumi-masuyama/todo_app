@@ -1,20 +1,24 @@
 'use client';
 import { ComponentProps, useEffect, useState } from 'react';
 import { addDoc, getDocs, Timestamp, deleteDoc } from 'firebase/firestore';
-import { Button, TextInput } from '@tremor/react';
+import { Button, Dialog, TextInput, DialogPanel } from '@tremor/react';
 import { auth, fetchTodoListQuery, todoColRef, todoDocRef } from '@/firebase';
 import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import { Header } from './_components/Header';
+
 type Todo = {
   id: string;
   todo: string;
   isDone: boolean;
+  created_at: Timestamp;
 };
-
+const now = new Date();
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [todoList, setTodoList] = useState<Todo[]>([]);
   const [todoInput, setTodoInput] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [target, setTarget] = useState<Todo | undefined>(undefined);
 
   useEffect(() => {
     console.log('auth effect');
@@ -25,6 +29,7 @@ export default function Home() {
   useEffect(() => {
     console.log('effect');
     fetchTodos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchTodos = async (): Promise<void> => {
@@ -37,6 +42,7 @@ export default function Home() {
         id: doc.id,
         todo: doc.data().todo,
         isDone: doc.data().isDone,
+        created_at: doc.data().created_at,
       }))
     );
   };
@@ -65,7 +71,6 @@ export default function Home() {
   const handleChangeInput: ComponentProps<'input'>['onChange'] = (event) => {
     setTodoInput(event.target.value);
   };
-
   const deleteTodo = async (id: string) => {
     await deleteDoc(todoDocRef(id));
     fetchTodos();
@@ -85,6 +90,10 @@ export default function Home() {
                   value={todo.todo}
                   className="w-full h-12 rounded-none focus:border-none"
                   readOnly
+                  onClick={() => {
+                    setIsOpen(true);
+                    setTarget(todo);
+                  }}
                 />
                 <Button
                   className="h-12 p-1 rounded-none bg-gradient-to-r from-pink-500 to-red-400 border-none"
@@ -120,6 +129,24 @@ export default function Home() {
           </div>
         </form>
       </section>
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        static={true}
+        className="z-[100]"
+      >
+        <DialogPanel className="max-w-sm">
+          <Button
+            variant="light"
+            className="mx-auto flex items-center"
+            onClick={() => setIsOpen(false)}
+          >
+            <div>登録日</div>
+            <input type='text'
+            value={String.target.}
+          </Button>
+        </DialogPanel>
+      </Dialog>
     </div>
   );
 }
