@@ -1,7 +1,7 @@
 'use client';
 import { ComponentProps, useEffect, useState } from 'react';
 import { addDoc, getDocs, Timestamp, deleteDoc } from 'firebase/firestore';
-import { Button, Dialog, TextInput, DialogPanel } from '@tremor/react';
+import { Button, Dialog, TextInput, DialogPanel, Text } from '@tremor/react';
 import { auth, fetchTodoListQuery, todoColRef, todoDocRef } from '@/firebase';
 import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import { Header } from './_components/Header';
@@ -85,16 +85,16 @@ export default function Home() {
           {todoList.map((todo) => {
             return (
               <li key={todo.id} className="flex py-1">
-                <TextInput
-                  checked
-                  value={todo.todo}
-                  className="w-full h-12 rounded-none focus:border-none"
-                  readOnly
+                <div
+                  className="w-full h-12 rounded-none focus:border-none bg-white flex items-center px-2"
                   onClick={() => {
                     setIsOpen(true);
                     setTarget(todo);
                   }}
-                />
+                >
+                  {todo.todo}
+                </div>
+
                 <Button
                   className="h-12 p-1 rounded-none bg-gradient-to-r from-pink-500 to-red-400 border-none"
                   onClick={() => {
@@ -142,8 +142,13 @@ export default function Home() {
             onClick={() => setIsOpen(false)}
           >
             <div>登録日</div>
-            <input type='text'
-            value={String.target.}
+            <div>
+              {String(target?.created_at.toDate().getFullYear()) +
+                '/' +
+                String(Number(target?.created_at.toDate().getMonth()) + 1) +
+                '/' +
+                String(target?.created_at.toDate().getDate())}
+            </div>
           </Button>
         </DialogPanel>
       </Dialog>
