@@ -1,7 +1,7 @@
 'use client';
 import { ComponentProps, useEffect, useState } from 'react';
 import { addDoc, getDocs, Timestamp, deleteDoc } from 'firebase/firestore';
-import { Button, Dialog, TextInput, DialogPanel, Text } from '@tremor/react';
+import { Button, Dialog, TextInput, DialogPanel } from '@tremor/react';
 import { auth, fetchTodoListQuery, todoColRef, todoDocRef } from '@/firebase';
 import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
 import { Header } from './_components/Header';
